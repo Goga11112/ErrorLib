@@ -1,6 +1,5 @@
 body {
     font-family: Arial, sans-serif;
-    padding-top: 20px; /* Отступ сверху, чтобы контент не сливался с навигацией, если она будет */
     background-color: #f8f9fa; /* Светлый фон */
 }
 /* Existing styles */
@@ -26,7 +25,7 @@ body {
     background-color: white;
     border: 1px solid #dee2e6;
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgb(6, 17, 172);
     display: none;
 }
 
@@ -83,7 +82,7 @@ body {
 }
 
 #loginButton:hover {
-    background-color: #45a049; /* Темно-зеленый цвет при наведении */
+    background-color: #1408c4; /* Темно-зеленый цвет при наведении */
 }
 
 /* Стили для элементов управления администратором */
@@ -129,7 +128,7 @@ body {
 
 /* Стили для навигационной панели */
 .navbar {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgb(1, 12, 168);
 }
 
 .navbar-brand {
@@ -155,7 +154,7 @@ body {
 }
 
 .btn-outline-light:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(4, 0, 250, 0.74);
     border-color: rgba(255, 255, 255, 0.5);
 }
 
