@@ -46,6 +46,11 @@ def login_page():
 def users_page():
     return render_template('users.html')
 
+
+@app.route('/help')
+def users_page():
+    return render_template('help.html')
+
 @app.route('/uploads/<path:filename>')
 def uploaded_file(filename):
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)

@@ -1,7 +1,7 @@
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
 
     const response = await fetch('/api/login', {
         method: 'POST',
@@ -24,6 +24,30 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         }, 3000);
         // Показываем adminControls без перезагрузки страницы
         document.getElementById('adminControls').style.display = 'block';
+        // Добавляем или обновляем имя пользователя и кнопку регистрации в navbar
+        const navbar = document.querySelector('.navbar-nav');
+        
+        // Удаляем старые элементы, если они существуют
+        const oldUserElement = document.getElementById('userNavItem');
+        if (oldUserElement) oldUserElement.remove();
+        const oldRegisterButton = document.getElementById('registerNavItem');
+        if (oldRegisterButton) oldRegisterButton.remove();
+
+        // Добавляем кнопку регистрации
+        const registerButton = document.createElement('li');
+        registerButton.id = 'registerNavItem';
+        registerButton.className = 'nav-item';
+        registerButton.innerHTML = `<a class="nav-link" href="/register">Регистрация</a>`;
+        navbar.appendChild(registerButton);
+
+        // Добавляем имя пользователя (прижимаем вправо)
+        const userElement = document.createElement('li');
+        userElement.id = 'userNavItem';
+        userElement.className = 'nav-item ms-auto'; // Добавляем ms-auto для выравнивания вправо
+        userElement.innerHTML = `<span class="nav-user">${username}</span>`;
+        navbar.appendChild(userElement);
+
+       
     } else {
         messageDiv.textContent = result.message;
         messageDiv.className = 'alert alert-danger';

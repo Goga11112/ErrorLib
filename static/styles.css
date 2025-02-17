@@ -3,7 +3,6 @@ body {
     padding-top: 20px; /* Отступ сверху, чтобы контент не сливался с навигацией, если она будет */
     background-color: #f8f9fa; /* Светлый фон */
 }
-
 /* Existing styles */
 
 .suggestion-item {
