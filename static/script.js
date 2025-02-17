@@ -8,6 +8,7 @@ document.getElementById('createErrorForm').onsubmit = async (e) => {
     
     if (response.ok) {
         fetchErrors();
+        clearForm();
     } else {
         const errorData = await response.json();
         showErrorMessage(errorData.message);
@@ -21,6 +22,11 @@ function showErrorMessage(message) {
     setTimeout(() => {
         errorMessage.style.display = 'none';
     }, 5000);
+}
+
+function clearForm() {
+    document.getElementById('createErrorForm').reset();
+    document.getElementById('errorMessage').style.display = 'none';
 }
 
 async function fetchErrors() {
