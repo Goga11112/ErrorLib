@@ -1,7 +1,7 @@
 document.getElementById('createErrorForm').onsubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    await fetch('http://127.0.0.1:5000/api/errors', {  // Updated URL to match Flask server
+    await fetch('http://127.0.0.1:5000/api/errors', {
         method: 'POST',
         body: formData
     });
@@ -9,20 +9,19 @@ document.getElementById('createErrorForm').onsubmit = async (e) => {
 };
 
 async function fetchErrors() {
-    const response = await fetch('http://127.0.0.1:5000/api/errors');  // URL for fetching errors
+    const response = await fetch('http://127.0.0.1:5000/api/errors');
     const errors = await response.json();
-    const errorSelect = document.getElementById('errorSelect'); // Get the errorSelect element
-    errorSelect.innerHTML = '<option value="">--Выберите ошибку--</option>'; // Reset select options
+    const errorSelect = document.getElementById('errorSelect');
+    errorSelect.innerHTML = '<option value="">--Выберите ошибку--</option>';
 
     errors.forEach(error => {
-        const option = document.createElement('option'); // Create a new option element
-        option.value = error.id; // Set the value to the error ID
-        option.textContent = error.name; // Set the display text to the error name
-        errorSelect.appendChild(option); // Add the option to the select element
+        const option = document.createElement('option');
+        option.value = error.id;
+        option.textContent = error.name;
+        errorSelect.appendChild(option);
     });
 }
 
-// Select error for updating
 document.getElementById('errorSelect').onchange = function() {
     const id = this.value;
     if (id) {
@@ -30,16 +29,27 @@ document.getElementById('errorSelect').onchange = function() {
             .then(response => response.json())
             .then(data => {
                 document.querySelector('input[name="errorId"]').value = id;
-                document.getElementById('errorName').textContent = data.name; // Display name in errorInfo
-                document.getElementById('errorImage').src = data.image; // Display image in errorInfo
-                document.getElementById('errorImage').style.display = 'block'; // Show image
-                document.getElementById('errorSolution').textContent = data.solution; // Display solution in errorInfo
+                document.getElementById('errorName').textContent = data.name;
+                
+                // Clear existing images
+                const imageContainer = document.getElementById('errorImages');
+                imageContainer.innerHTML = '';
+                
+                // Display all images
+                data.images.forEach(image => {
+                    const img = document.createElement('img');
+                    img.src = '/uploads/' + image;
+                    img.alt = 'Изображение ошибки';
+                    img.className = 'error-image img-thumbnail';
+                    img.style.maxWidth = '200px';
+                    imageContainer.appendChild(img);
+                });
 
+                document.getElementById('errorSolution').textContent = data.solution;
             });
     }
 };
 
-// Update error
 document.getElementById('updateErrorForm').onsubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -50,7 +60,6 @@ document.getElementById('updateErrorForm').onsubmit = async (e) => {
     fetchErrors();
 };
 
-// Delete error
 document.getElementById('deleteErrorButton').onclick = async () => {
     const errorId = document.querySelector('input[name="errorId"]').value;
     await fetch(`http://127.0.0.1:5000/api/errors/${errorId}`, {

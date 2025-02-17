@@ -1,9 +1,10 @@
-from app import db
+from app import db, app
 
-# Создание таблиц
 def create_tables():
-    db.create_all()
-    print("Таблицы успешно созданы.")
+    with app.app_context():
+        db.create_all()
+        print("Таблицы успешно созданы.")
+        print("Созданы таблицы: Error, ErrorImage")
 
 if __name__ == "__main__":
     create_tables()

@@ -36,7 +36,8 @@
         <hr class="mb-4">
         <h5 class="mb-3"><b>Ошибка:</b> <span id="errorName"></span></h5>
         <div class="text-center mb-3">
-            <img src="" alt="Изображение ошибки" id="errorImage" class="error-image" style="display:none;">
+            <div id="errorImages" class="d-flex flex-wrap gap-2"></div>
+
         </div>
         <h5 class="mb-3"><b>Решение проблемы:</b></h5>
         <p id="errorSolution"></p>
@@ -54,7 +55,8 @@
         <h3>Создать новую ошибку</h3>
         <form id="createErrorForm" enctype="multipart/form-data"> <!-- Добавлено enctype для загрузки файлов -->
             <input type="text" name="errorName" placeholder="Название ошибки" required>
-            <input type="file" name="errorImageFile" accept="image/*" alt="Формат img или png" required> <!-- Поле для загрузки изображения -->
+            <input type="file" name="errorImageFiles" accept="image/*" multiple alt="Формат img или png" required> <!-- Поле для загрузки нескольких изображений -->
+
             <textarea name="errorSolution" placeholder="Решение проблемы" required></textarea>
             <button type="submit">Создать ошибку</button>
         </form>
@@ -63,7 +65,8 @@
         <form id="updateErrorForm">
             <input type="hidden" name="errorId" required>
             <input type="text" name="errorName" placeholder="Новое название ошибки" required>
-            <input type="file" name="errorImageFile" accept="image/*" required> <!-- Поле для загрузки изображения -->
+            <input type="file" name="errorImageFiles" accept="image/*" multiple required> <!-- Поле для загрузки нескольких изображений -->
+
             <textarea name="errorSolution" placeholder="Новое решение проблемы" required></textarea>
             <button type="submit">Обновить ошибку</button>
         </form>
