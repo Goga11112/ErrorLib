@@ -1,4 +1,4 @@
-from app import db
+from db import db
 
 class ErrorImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)

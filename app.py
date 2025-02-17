@@ -1,19 +1,20 @@
 from flask import Flask, request, jsonify, send_from_directory, render_template, abort
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from db import db
 from controllers.error_controller import create_error, update_error, delete_error, get_error, get_errors
 from controllers.auth_controller import register, login
 from controllers.user_controller import create_user
-from models import User, Error, ErrorImage
 import os
+
+from models.user import User
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Goga:191202@localhost/db_errors'
 app.config['UPLOAD_FOLDER'] = os.path.abspath('uploads')
 app.config['SECRET_KEY'] = 'your-secret-key-here'
 CORS(app)
-db = SQLAlchemy(app)
+db.init_app(app)
 migrate = Migrate(app, db)
 
 # Создаем папку uploads, если она не существует

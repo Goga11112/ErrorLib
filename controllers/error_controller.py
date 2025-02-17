@@ -1,7 +1,7 @@
-from flask import request, jsonify
+from flask import request, jsonify, current_app
 from models.error import Error
 from models.error_image import ErrorImage
-from app import db
+from db import db
 from utils.file_utils import get_unique_filename
 from utils.error_utils import check_error_name_exists
 import os
@@ -26,14 +26,14 @@ def create_error():
         for image_file in error_files:
             if image_file.filename != '':
                 filename = get_unique_filename(image_file.filename)
-                image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
                 error_image = ErrorImage(filename=filename, type='error', error=new_error)
                 db.session.add(error_image)
         
         for image_file in solution_files:
             if image_file.filename != '':
                 filename = get_unique_filename(image_file.filename)
-                image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
                 error_image = ErrorImage(filename=filename, type='solution', error=new_error)
                 db.session.add(error_image)
 
@@ -60,21 +60,21 @@ def update_error(error_id):
             solution_files = request.files.getlist('solutionImageFiles')
             
             for image in error.images:
-                if os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], image.filename)):
-                    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
+                if os.path.exists(os.path.join(current_app.config['UPLOAD_FOLDER'], image.filename)):
+                    os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], image.filename))
                 db.session.delete(image)
             
             for image_file in error_files:
                 if image_file.filename != '':
                     filename = get_unique_filename(image_file.filename)
-                    image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
                     error_image = ErrorImage(filename=filename, type='error', error=error)
                     db.session.add(error_image)
             
             for image_file in solution_files:
                 if image_file.filename != '':
                     filename = get_unique_filename(image_file.filename)
-                    image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
                     error_image = ErrorImage(filename=filename, type='solution', error=error)
                     db.session.add(error_image)
 
@@ -87,8 +87,8 @@ def update_error(error_id):
 def delete_error(error_id):
     error = Error.query.get_or_404(error_id)
     for image in error.images:
-        if os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], image.filename)):
-            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
+        if os.path.exists(os.path.join(current_app.config['UPLOAD_FOLDER'], image.filename)):
+            os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], image.filename))
 
     db.session.delete(error)    
     db.session.commit()
