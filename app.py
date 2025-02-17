@@ -48,7 +48,7 @@ def users_page():
 
 
 @app.route('/help')
-def users_page():
+def help_page():
     return render_template('help.html')
 
 @app.route('/uploads/<path:filename>')
