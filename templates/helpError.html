@@ -37,8 +37,10 @@
         <h3>Обновить существующую ошибку</h3>
         <form id="updateErrorForm">
             <input type="hidden" name="errorId" required>
-            <input type="text" name="errorName" placeholder="Новое название ошибки" required>
-            <textarea name="errorSolution" placeholder="Новое решение проблемы" required></textarea>
+            <input type="text" name="errorName" placeholder="Название ошибки" required>
+            <input type="file" name="errorImageFiles" accept="image/*" multiple alt="Формат img или png" required>
+            <textarea name="errorSolution" placeholder="Решение проблемы" required></textarea>
+            <input type="file" name="solutionImageFiles" accept="image/*" multiple alt="Формат img или png" required>
             <button type="submit">Обновить ошибку</button>
         </form>
 

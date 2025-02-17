@@ -1,5 +1,5 @@
-body {
-    font-family: Arial, sans-serif;
+/* Стили для навигационной панели */
+.navbar {
     padding-top: 20px; /* Отступ сверху, чтобы контент не сливался с навигацией, если она будет */
     background-color: #f8f9fa; /* Светлый фон */
 }

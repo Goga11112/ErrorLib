@@ -8,3 +8,14 @@ def get_unique_filename(filename):
         filename = f"{base}_{counter}{ext}"
         counter += 1
     return filename
+
+def delete_file(file_path):
+    """Удаляет файл по указанному пути."""
+    if os.path.exists(file_path):
+        try:
+            os.remove(file_path)
+            return True
+        except Exception as e:
+            print(f"Ошибка при удалении файла {file_path}: {str(e)}")
+            return False
+    return False
