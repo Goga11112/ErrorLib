@@ -14,12 +14,33 @@ async function fetchErrors() {
     const errorSelect = document.getElementById('errorSelect');
     errorSelect.innerHTML = '<option value="">--Выберите ошибку--</option>';
 
-    errors.forEach(error => {
-        const option = document.createElement('option');
-        option.value = error.id;
-        option.textContent = error.name;
-        errorSelect.appendChild(option);
-    });
+    if (errors && Array.isArray(errors)) {
+        errors.forEach(error => {
+            const option = document.createElement('option');
+            option.value = error.id;
+            option.textContent = error.name;
+            errorSelect.appendChild(option);
+        });
+    }
+}
+
+function createImageElement(imageUrl, index, type) {
+    const container = document.createElement('div');
+    container.className = 'image-container mb-3';
+
+    const img = document.createElement('img');
+    img.src = '/uploads/' + imageUrl;
+    img.alt = type === 'error' ? 'Изображение ошибки' : 'Изображение решения';
+    img.className = 'error-image img-thumbnail';
+    img.style.maxWidth = '200px';
+
+    const caption = document.createElement('div');
+    caption.className = 'text-center mt-2';
+    caption.textContent = `Рисунок ${index + 1}`;
+
+    container.appendChild(img);
+    container.appendChild(caption);
+    return container;
 }
 
 document.getElementById('errorSelect').onchange = function() {
@@ -32,18 +53,27 @@ document.getElementById('errorSelect').onchange = function() {
                 document.getElementById('errorName').textContent = data.name;
                 
                 // Clear existing images
-                const imageContainer = document.getElementById('errorImages');
-                imageContainer.innerHTML = '';
+                const errorImagesContainer = document.getElementById('errorImages');
+                errorImagesContainer.innerHTML = '';
                 
-                // Display all images
-                data.images.forEach(image => {
-                    const img = document.createElement('img');
-                    img.src = '/uploads/' + image;
-                    img.alt = 'Изображение ошибки';
-                    img.className = 'error-image img-thumbnail';
-                    img.style.maxWidth = '200px';
-                    imageContainer.appendChild(img);
-                });
+                const solutionImagesContainer = document.getElementById('errorImagesRes');
+                solutionImagesContainer.innerHTML = '';
+                
+                // Display error images
+                if (data.error_images && Array.isArray(data.error_images)) {
+                    data.error_images.forEach((image, index) => {
+                        const imageElement = createImageElement(image, index, 'error');
+                        errorImagesContainer.appendChild(imageElement);
+                    });
+                }
+                
+                // Display solution images
+                if (data.solution_images && Array.isArray(data.solution_images)) {
+                    data.solution_images.forEach((image, index) => {
+                        const imageElement = createImageElement(image, index, 'solution');
+                        solutionImagesContainer.appendChild(imageElement);
+                    });
+                }
 
                 document.getElementById('errorSolution').textContent = data.solution;
             });

@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
     <title>Help Error - База знаний ошибок</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles.css">
-
 </head>
 <body>
     <div class="container">
@@ -20,7 +18,7 @@
             <div class="mb-3">
                 <label for="searchError" class="form-label"><b>Поиск ошибки:</b></label>
                 <input type="text" class="form-control" id="searchError" placeholder="Введите название ошибки...">
-                <div id="suggestions" class="list-group"></div> <!-- Suggestion box as Bootstrap list-group -->
+                <div id="suggestions" class="list-group"></div>
             </div>
         </div>
         <div>
@@ -37,9 +35,11 @@
         <h5 class="mb-3"><b>Ошибка:</b> <span id="errorName"></span></h5>
         <div class="text-center mb-3">
             <div id="errorImages" class="d-flex flex-wrap gap-2"></div>
-
         </div>
         <h5 class="mb-3"><b>Решение проблемы:</b></h5>
+        <div class="text-center mb-3">
+            <div id="errorImagesRes" class="d-flex flex-wrap gap-2"></div>
+        </div>
         <p id="errorSolution"></p>
     </div>
 
@@ -50,23 +50,28 @@
         <button id="loginButton">Войти</button>
     </div>
     <div id="adminControls" style="display: none;">
-        <div id="errorMessage" style="color: red; display: none;"></div> <!-- Элемент для отображения ошибок -->
+        <div id="errorMessage" style="color: red; display: none;"></div>
 
         <h3>Создать новую ошибку</h3>
-        <form id="createErrorForm" enctype="multipart/form-data"> <!-- Добавлено enctype для загрузки файлов -->
+        <form id="createErrorForm" enctype="multipart/form-data">
+            <p>Рисунок ошибки:</p>
+            <input type="file" name="errorImageFiles" accept="image/*" multiple alt="Формат img или png" required>
             <input type="text" name="errorName" placeholder="Название ошибки" required>
-            <input type="file" name="errorImageFiles" accept="image/*" multiple alt="Формат img или png" required> <!-- Поле для загрузки нескольких изображений -->
-
+            <p>Рисунок решения ошибки:</p>
+            <input type="file" name="solutionImageFiles" accept="image/*" multiple alt="Формат img или png" required>
             <textarea name="errorSolution" placeholder="Решение проблемы" required></textarea>
             <button type="submit">Создать ошибку</button>
         </form>
 
         <h3>Обновить существующую ошибку</h3>
-        <form id="updateErrorForm">
+        <form id="updateErrorForm" enctype="multipart/form-data">
             <input type="hidden" name="errorId" required>
             <input type="text" name="errorName" placeholder="Новое название ошибки" required>
-            <input type="file" name="errorImageFiles" accept="image/*" multiple required> <!-- Поле для загрузки нескольких изображений -->
-
+            <p>Рисунок ошибки:</p>
+            <input type="file" name="errorImageFiles" accept="image/*" multiple required>
+            
+            <p>Рисунок решения ошибки:</p>
+            <input type="file" name="solutionImageFiles" accept="image/*" multiple required>
             <textarea name="errorSolution" placeholder="Новое решение проблемы" required></textarea>
             <button type="submit">Обновить ошибку</button>
         </form>
@@ -74,7 +79,6 @@
         <button id="deleteErrorButton">Удалить ошибку</button>
         <script>
             document.getElementById('deleteErrorButton').addEventListener('click', function() {
-                // Логика для удаления ошибки
                 const errorId = document.querySelector('input[name="errorId"]').value;
                 if (errorId) {
                     fetch(`/api/errors/${errorId}`, {
@@ -83,7 +87,7 @@
                     .then(response => {
                         if (response.ok) {
                             alert('Ошибка успешно удалена');
-                            location.reload(); // Обновляем страницу после удаления
+                            location.reload();
                         } else {
                             alert('Ошибка при удалении');
                         }
@@ -94,8 +98,7 @@
             });
         </script>
 
-        
-        <ul id="errorList"></ul> <!-- Добавлен элемент для отображения списка ошибок -->
+        <ul id="errorList"></ul>
     </div>
     <footer class="py-3 my-4 border-top">
         <p class="text-center text-muted">© 2024 Goga, Inc</p>
@@ -110,37 +113,34 @@
                 const password = document.getElementById('password').value;
 
                 if (username === 'admin' && password === 'admin') {
-                   adminControls.style.display = 'block'; // Показываем элементы управления администратором
-                    document.getElementById('loginForm').style.display = 'none'; // Скрываем форму входа
+                   adminControls.style.display = 'block';
+                    document.getElementById('loginForm').style.display = 'none';
                 } else {
                     alert('Неверный логин или пароль');
                 }
             });
         });
-        // JavaScript to handle API calls and UI updates
         document.addEventListener('DOMContentLoaded', function() {
             const errorSelect = document.getElementById('errorSelect');
-            const errorList = document.getElementById('errorList'); // Элемент для отображения списка ошибок
+            const errorList = document.getElementById('errorList');
             const searchError = document.getElementById('searchError');
-            const suggestions = document.getElementById('suggestions'); // Элемент для отображения предложений
-            let errors = {}; // Объект для хранения ошибок
+            const suggestions = document.getElementById('suggestions');
+            let errors = {};
 
-            // Fetch and display errors
-            function fetchErrors() { // Функция для получения ошибок
-                fetch('http://127.0.0.1:5000/api/errors') // Запрос к API для получения ошибок
+            function fetchErrors() {
+                fetch('http://127.0.0.1:5000/api/errors')
                     .then(response => response.json())
                     .then(data => {
                         errorList.innerHTML = '';
                         errors = data.reduce((acc, error) => {
-                            acc[error.id] = error; // Сохраняем ошибки в объект для быстрого доступа
+                            acc[error.id] = error;
                             const li = document.createElement('li');
                             li.textContent = error.name;
                             li.onclick = function() {
-                                errorSelect.value = error.id; // Set selected error ID
-                                document.querySelector('input[name="errorId"]').value = error.id; // Set hidden input for update
-                                document.querySelector('input[name="errorName"]').value = error.name; // Set name for update
-                                document.querySelector('input[name="errorImage"]').value = error.image; // Set image for update
-                                document.querySelector('textarea[name="errorSolution"]').value = error.solution; // Set solution for update
+                                errorSelect.value = error.id;
+                                document.querySelector('input[name="errorId"]').value = error.id;
+                                document.querySelector('input[name="errorName"]').value = error.name;
+                                document.querySelector('textarea[name="errorSolution"]').value = error.solution;
                             };
                             errorList.appendChild(li);
                             return acc;
@@ -148,40 +148,38 @@
                     });
             }
 
-            // Fetch suggestions based on input
-            searchError.addEventListener('input', function() { // Обработчик события ввода
+            searchError.addEventListener('input', function() {
                 const searchValue = this.value.toLowerCase();
-                suggestions.innerHTML = ''; // Очистить предыдущие предложения
+                suggestions.innerHTML = '';
                 if (searchValue) {
                     const matchingErrors = Object.keys(errors).filter(key => 
                         errors[key].name.toLowerCase().includes(searchValue)
                     );
                     if (matchingErrors.length > 0) {
-                        suggestions.style.display = 'block'; // Показать предложения
+                        suggestions.style.display = 'block';
                         matchingErrors.forEach(key => {
                             const suggestionItem = document.createElement('div');
                             suggestionItem.className = 'suggestion-item';
-                            suggestionItem.textContent = errors[key].name; // Отобразить имя вместо ключа
+                            suggestionItem.textContent = errors[key].name;
                             suggestionItem.onclick = function() {
-                                searchError.value = errors[key].name; // Установить значение ввода на выбранное предложение
-                                suggestions.style.display = 'none'; // Скрыть предложения
-                                errorSelect.value = key; // Установить значение выбора
-                                errorSelect.dispatchEvent(new Event('change')); // Запустить событие изменения
+                                searchError.value = errors[key].name;
+                                suggestions.style.display = 'none';
+                                errorSelect.value = key;
+                                errorSelect.dispatchEvent(new Event('change'));
                             };
                             suggestions.appendChild(suggestionItem);
                         });
                     } else {
-                        suggestions.style.display = 'none'; // Скрыть предложения, если нет совпадений
+                        suggestions.style.display = 'none';
                     }
                 } else {
-                    suggestions.style.display = 'none'; // Скрыть предложения, если ввод пуст
+                    suggestions.style.display = 'none';
                 }
             });
 
-            fetchErrors(); // Первоначальный запрос для получения ошибок
+            fetchErrors();
         });
     </script>
-
 
 <script src="/static/script.js"></script>
 </body>

@@ -12,13 +12,16 @@ CORS(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-# Модель для изображений ошибок
 class ErrorImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255), nullable=False)
+    type = db.Column(db.String(10), nullable=False)  # Изменено на строковый тип
     error_id = db.Column(db.Integer, db.ForeignKey('error.id'), nullable=False)
 
-# Модель для ошибок
+    __table_args__ = (
+        db.CheckConstraint("type IN ('error', 'solution')", name='type_check'),
+    )
+
 class Error(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
@@ -32,18 +35,29 @@ def index():
 @app.route('/api/errors', methods=['POST'])
 def create_error():
     data = request.form
-    image_files = request.files.getlist('errorImageFiles')
+    error_files = request.files.getlist('errorImageFiles')
+    solution_files = request.files.getlist('solutionImageFiles')
     
-    for image_file in image_files:
-        if not (image_file.filename.endswith('.png') or image_file.filename.endswith('.jpg') or image_file.filename.endswith('.jpeg')):
-            return jsonify({'message': 'Недопустимый формат файла. Допустимы только .png и .jpg'}), 400
+    # Проверка форматов файлов
+    for files in [error_files, solution_files]:
+        for image_file in files:
+            if not (image_file.filename.endswith('.png') or image_file.filename.endswith('.jpg') or image_file.filename.endswith('.jpeg')):
+                return jsonify({'message': 'Недопустимый формат файла. Допустимы только .png и .jpg'}), 400
     
     new_error = Error(name=data['errorName'], solution=data['errorSolution'])
     
-    for image_file in image_files:
+    # Сохранение изображений ошибок
+    for image_file in error_files:
         filename = secure_filename(image_file.filename)
         image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        error_image = ErrorImage(filename=filename, error=new_error)
+        error_image = ErrorImage(filename=filename, type='error', error=new_error)
+        db.session.add(error_image)
+    
+    # Сохранение изображений решений
+    for image_file in solution_files:
+        filename = secure_filename(image_file.filename)
+        image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        error_image = ErrorImage(filename=filename, type='solution', error=new_error)
         db.session.add(error_image)
 
     db.session.add(new_error)
@@ -58,20 +72,31 @@ def update_error(error_id):
     error.name = data['errorName']
     error.solution = data['errorSolution']
     
-    if 'errorImageFiles' in request.files:
-        image_files = request.files.getlist('errorImageFiles')
-        if any(f.filename != '' for f in image_files):
-            for image in error.images:
-                if os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], image.filename)):
-                    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
-                db.session.delete(image)
-            
-            for image_file in image_files:
-                if image_file.filename != '':
-                    filename = secure_filename(image_file.filename)
-                    image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    error_image = ErrorImage(filename=filename, error=error)
-                    db.session.add(error_image)
+    if 'errorImageFiles' in request.files or 'solutionImageFiles' in request.files:
+        error_files = request.files.getlist('errorImageFiles')
+        solution_files = request.files.getlist('solutionImageFiles')
+        
+        # Удаление старых изображений
+        for image in error.images:
+            if os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], image.filename)):
+                os.remove(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
+            db.session.delete(image)
+        
+        # Сохранение новых изображений ошибок
+        for image_file in error_files:
+            if image_file.filename != '':
+                filename = secure_filename(image_file.filename)
+                image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                error_image = ErrorImage(filename=filename, type='error', error=error)
+                db.session.add(error_image)
+        
+        # Сохранение новых изображений решений
+        for image_file in solution_files:
+            if image_file.filename != '':
+                filename = secure_filename(image_file.filename)
+                image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                error_image = ErrorImage(filename=filename, type='solution', error=error)
+                db.session.add(error_image)
 
     db.session.commit()
     return jsonify({'message': 'Error updated successfully'})
@@ -93,7 +118,8 @@ def get_error(error_id):
     return jsonify({
         'id': error.id,
         'name': error.name,
-        'images': [image.filename for image in error.images],
+        'error_images': [img.filename for img in error.images if img.type == 'error'],
+        'solution_images': [img.filename for img in error.images if img.type == 'solution'],
         'solution': error.solution
     })
 
@@ -103,7 +129,8 @@ def get_errors():
     return jsonify([{
         'id': error.id,
         'name': error.name,
-        'images': [image.filename for image in error.images],
+        'error_images': [img.filename for img in error.images if img.type == 'error'],
+        'solution_images': [img.filename for img in error.images if img.type == 'solution'],
         'solution': error.solution
     } for error in errors])
 
