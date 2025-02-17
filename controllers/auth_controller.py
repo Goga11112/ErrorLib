@@ -24,6 +24,23 @@ def login():
 
     user = User.query.filter_by(username=auth.username).first()
     if user and user.check_password(auth.password):
-        return jsonify({'message': 'Login successful', 'is_admin': user.is_admin}), 200
+        return jsonify({
+            'message': 'Login successful', 
+            'is_admin': user.is_admin
+        }), 200
 
     return jsonify({'message': 'Invalid credentials'}), 401
+
+def check_auth():
+    auth = request.authorization
+    if not auth:
+        return jsonify({'authenticated': False})
+        
+    user = User.query.filter_by(username=auth.username).first()
+    if user and user.check_password(auth.password):
+        return jsonify({
+            'authenticated': True,
+            'is_admin': user.is_admin
+        })
+    
+    return jsonify({'authenticated': False})

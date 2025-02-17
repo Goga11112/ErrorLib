@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Help Error - База знаний ошибок</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
-    <div class="container">
-        <header class="d-flex justify-content-center py-3">
-            <h2>База знаний ошибок</h2>
-        </header>
-    
+{% extends "base.html" %}
+
+{% block navbar %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Остальная часть страницы -->
     <div class="row mb-3">
         <div class="col-md-6">
             <div class="mb-3">
@@ -28,6 +22,29 @@
             </select>
         </div>
     </div>
+
+    <!-- CRUD для ошибок (виден только авторизованным пользователям) -->
+    <div id="adminControls" style="display: none;">
+        <h3>Создать новую ошибку</h3>
+        <form id="createErrorForm" enctype="multipart/form-data">
+            <input type="text" name="errorName" placeholder="Название ошибки" required>
+            <input type="file" name="errorImageFiles" accept="image/*" multiple alt="Формат img или png" required>
+            <textarea name="errorSolution" placeholder="Решение проблемы" required></textarea>
+            <input type="file" name="solutionImageFiles" accept="image/*" multiple alt="Формат img или png" required>
+            <button type="submit">Создать ошибку</button>
+        </form>
+
+        <h3>Обновить существующую ошибку</h3>
+        <form id="updateErrorForm">
+            <input type="hidden" name="errorId" required>
+            <input type="text" name="errorName" placeholder="Новое название ошибки" required>
+            <textarea name="errorSolution" placeholder="Новое решение проблемы" required></textarea>
+            <button type="submit">Обновить ошибку</button>
+        </form>
+
+        <button id="deleteErrorButton">Удалить ошибку</button>
+    </div>
+
     <div id="errorInfo" class="p-4">
         <h3>Информация об ошибке</h3>
         <p>Выберите ошибку из списка или найдите через поиск, чтобы увидеть подробную информацию.</p>
@@ -42,145 +59,28 @@
         </div>
         <p id="errorSolution"></p>
     </div>
-
-    <div id="loginForm">
-        <h2>Вход</h2>
-        <input type="text" id="username" placeholder="Логин" />
-        <input type="password" id="password" placeholder="Пароль" />
-        <button id="loginButton">Войти</button>
-    </div>
-    <div id="adminControls" style="display: none;">
-        <div id="errorMessage" style="color: red; display: none;"></div>
-
-        <h3>Создать новую ошибку</h3>
-        <form id="createErrorForm" enctype="multipart/form-data">
-            <p>Рисунок ошибки:</p>
-            <input type="file" name="errorImageFiles" accept="image/*" multiple alt="Формат img или png" required>
-            <input type="text" name="errorName" placeholder="Название ошибки" required>
-            <p>Рисунок решения ошибки:</p>
-            <input type="file" name="solutionImageFiles" accept="image/*" multiple alt="Формат img или png" required>
-            <textarea name="errorSolution" placeholder="Решение проблемы" required></textarea>
-            <button type="submit">Создать ошибку</button>
-        </form>
-
-        <h3>Обновить существующую ошибку</h3>
-        <form id="updateErrorForm" enctype="multipart/form-data">
-            <input type="hidden" name="errorId" required>
-            <input type="text" name="errorName" placeholder="Новое название ошибки" required>
-            <p>Рисунок ошибки:</p>
-            <input type="file" name="errorImageFiles" accept="image/*" multiple required>
-            
-            <p>Рисунок решения ошибки:</p>
-            <input type="file" name="solutionImageFiles" accept="image/*" multiple required>
-            <textarea name="errorSolution" placeholder="Новое решение проблемы" required></textarea>
-            <button type="submit">Обновить ошибку</button>
-        </form>
-
-        <button id="deleteErrorButton">Удалить ошибку</button>
-        <script>
-            document.getElementById('deleteErrorButton').addEventListener('click', function() {
-                const errorId = document.querySelector('input[name="errorId"]').value;
-                if (errorId) {
-                    fetch(`/api/errors/${errorId}`, {
-                        method: 'DELETE'
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            alert('Ошибка успешно удалена');
-                            location.reload();
-                        } else {
-                            alert('Ошибка при удалении');
-                        }
-                    });
-                } else {
-                    alert('Пожалуйста, выберите ошибку для удаления');
-                }
-            });
-        </script>
-
-        <ul id="errorList"></ul>
-    </div>
-    <footer class="py-3 my-4 border-top">
-        <p class="text-center text-muted">© 2024 Goga, Inc</p>
-    </footer>
 </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginButton = document.getElementById('loginButton');
-            const adminControls = document.getElementById('adminControls');
-            loginButton.addEventListener('click', function() {
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
+{% endblock %}
 
-                if (username === 'admin' && password === 'admin') {
-                   adminControls.style.display = 'block';
-                    document.getElementById('loginForm').style.display = 'none';
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static', filename='login.js') }}"></script>
+<script>
+    // Показываем/скрываем CRUD в зависимости от авторизации
+    function checkAuth() {
+        fetch('/api/check-auth')
+            .then(response => response.json())
+            .then(data => {
+                if (data.authenticated) {
+                    document.getElementById('adminControls').style.display = 'block';
                 } else {
-                    alert('Неверный логин или пароль');
+                    document.getElementById('adminControls').style.display = 'none';
                 }
             });
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            const errorSelect = document.getElementById('errorSelect');
-            const errorList = document.getElementById('errorList');
-            const searchError = document.getElementById('searchError');
-            const suggestions = document.getElementById('suggestions');
-            let errors = {};
+    }
 
-            function fetchErrors() {
-                fetch('http://127.0.0.1:5000/api/errors')
-                    .then(response => response.json())
-                    .then(data => {
-                        errorList.innerHTML = '';
-                        errors = data.reduce((acc, error) => {
-                            acc[error.id] = error;
-                            const li = document.createElement('li');
-                            li.textContent = error.name;
-                            li.onclick = function() {
-                                errorSelect.value = error.id;
-                                document.querySelector('input[name="errorId"]').value = error.id;
-                                document.querySelector('input[name="errorName"]').value = error.name;
-                                document.querySelector('textarea[name="errorSolution"]').value = error.solution;
-                            };
-                            errorList.appendChild(li);
-                            return acc;
-                        }, {});
-                    });
-            }
-
-            searchError.addEventListener('input', function() {
-                const searchValue = this.value.toLowerCase();
-                suggestions.innerHTML = '';
-                if (searchValue) {
-                    const matchingErrors = Object.keys(errors).filter(key => 
-                        errors[key].name.toLowerCase().includes(searchValue)
-                    );
-                    if (matchingErrors.length > 0) {
-                        suggestions.style.display = 'block';
-                        matchingErrors.forEach(key => {
-                            const suggestionItem = document.createElement('div');
-                            suggestionItem.className = 'suggestion-item';
-                            suggestionItem.textContent = errors[key].name;
-                            suggestionItem.onclick = function() {
-                                searchError.value = errors[key].name;
-                                suggestions.style.display = 'none';
-                                errorSelect.value = key;
-                                errorSelect.dispatchEvent(new Event('change'));
-                            };
-                            suggestions.appendChild(suggestionItem);
-                        });
-                    } else {
-                        suggestions.style.display = 'none';
-                    }
-                } else {
-                    suggestions.style.display = 'none';
-                }
-            });
-
-            fetchErrors();
-        });
-    </script>
-
-<script src="/static/script.js"></script>
-</body>
-</html>
+    // Проверяем авторизацию при загрузке страницы
+    window.onload = checkAuth;
+</script>
+{% endblock %}
