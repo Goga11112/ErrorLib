@@ -1,12 +1,27 @@
 document.getElementById('createErrorForm').onsubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    await fetch('http://127.0.0.1:5000/api/errors', {
+    const response = await fetch('http://127.0.0.1:5000/api/errors', {
         method: 'POST',
         body: formData
     });
-    fetchErrors();
+    
+    if (response.ok) {
+        fetchErrors();
+    } else {
+        const errorData = await response.json();
+        showErrorMessage(errorData.message);
+    }
 };
+
+function showErrorMessage(message) {
+    const errorMessage = document.getElementById('errorMessage');
+    errorMessage.textContent = message;
+    errorMessage.style.display = 'block';
+    setTimeout(() => {
+        errorMessage.style.display = 'none';
+    }, 5000);
+}
 
 async function fetchErrors() {
     const response = await fetch('http://127.0.0.1:5000/api/errors');
@@ -48,7 +63,6 @@ function setupSearch() {
     const suggestions = document.getElementById('suggestions');
     let errors = {};
 
-    // Fetch errors on page load
     fetch('http://127.0.0.1:5000/api/errors')
         .then(response => response.json())
         .then(data => {
@@ -111,14 +125,12 @@ document.getElementById('errorSelect').onchange = function() {
                 document.querySelector('input[name="errorId"]').value = id;
                 document.getElementById('errorName').textContent = data.name;
                 
-                // Clear existing images
                 const errorImagesContainer = document.getElementById('errorImages');
                 errorImagesContainer.innerHTML = '';
                 
                 const solutionImagesContainer = document.getElementById('errorImagesRes');
                 solutionImagesContainer.innerHTML = '';
                 
-                // Display error images
                 if (data.error_images && Array.isArray(data.error_images)) {
                     data.error_images.forEach((image, index) => {
                         const imageElement = createImageElement(image, index, 'error');
@@ -126,7 +138,6 @@ document.getElementById('errorSelect').onchange = function() {
                     });
                 }
                 
-                // Display solution images
                 if (data.solution_images && Array.isArray(data.solution_images)) {
                     data.solution_images.forEach((image, index) => {
                         const imageElement = createImageElement(image, index, 'solution');
@@ -142,11 +153,17 @@ document.getElementById('errorSelect').onchange = function() {
 document.getElementById('updateErrorForm').onsubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    await fetch(`http://127.0.0.1:5000/api/errors/${formData.get('errorId')}`, {
+    const response = await fetch(`http://127.0.0.1:5000/api/errors/${formData.get('errorId')}`, {
         method: 'PUT',
         body: formData
     });
-    fetchErrors();
+    
+    if (response.ok) {
+        fetchErrors();
+    } else {
+        const errorData = await response.json();
+        showErrorMessage(errorData.message);
+    }
 };
 
 document.getElementById('deleteErrorButton').onclick = async () => {
