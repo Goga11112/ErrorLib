@@ -3,25 +3,40 @@ body {
     padding-top: 20px; /* Отступ сверху, чтобы контент не сливался с навигацией, если она будет */
     background-color: #f8f9fa; /* Светлый фон */
 }
+
+/* Existing styles */
+
 .suggestion-item {
-    padding: 8px;
+    padding: 8px 12px;
     cursor: pointer;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    transition: background-color 0.2s;
 }
+
 .suggestion-item:hover {
-    background-color: #e9ecef; /* Светло-серый фон при наведении */
+    background-color: #e9ecef;
 }
+
 #suggestions {
-    border: 1px solid rgba(0,0,0,.15);
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
     max-height: 200px;
     overflow-y: auto;
-    display: none;
-    position: absolute;
     background-color: white;
-    z-index: 1000;
-    width: 100%; /* Чтобы соответствовать ширине input */
-    border-radius: 0 0 .25rem .25rem; /* Закругление нижних углов */
-    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15); /* Тень для отделения от фона */
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: none;
 }
+
+.search-container {
+    position: relative;
+}
+
+/* Add other existing styles here */
+
 #errorInfo {
     background-color: #fff;
     border-radius: .25rem;

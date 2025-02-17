@@ -43,6 +43,65 @@ function createImageElement(imageUrl, index, type) {
     return container;
 }
 
+function setupSearch() {
+    const searchInput = document.getElementById('searchError');
+    const suggestions = document.getElementById('suggestions');
+    let errors = {};
+
+    // Fetch errors on page load
+    fetch('http://127.0.0.1:5000/api/errors')
+        .then(response => response.json())
+        .then(data => {
+            errors = data.reduce((acc, error) => {
+                acc[error.id] = error;
+                return acc;
+            }, {});
+        });
+
+    searchInput.addEventListener('input', function() {
+        const searchValue = this.value.toLowerCase();
+        suggestions.innerHTML = '';
+
+        if (searchValue) {
+            const matchingErrors = Object.keys(errors).filter(key => 
+                errors[key].name.toLowerCase().includes(searchValue)
+            );
+
+            if (matchingErrors.length > 0) {
+                suggestions.style.display = 'block';
+                matchingErrors.forEach(key => {
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.className = 'suggestion-item';
+                    suggestionItem.textContent = errors[key].name;
+                    suggestionItem.onclick = function() {
+                        searchInput.value = errors[key].name;
+                        suggestions.style.display = 'none';
+                        document.getElementById('errorSelect').value = key;
+                        document.getElementById('errorSelect').dispatchEvent(new Event('change'));
+                    };
+                    suggestions.appendChild(suggestionItem);
+                });
+            } else {
+                suggestions.style.display = 'none';
+            }
+        } else {
+            suggestions.style.display = 'none';
+        }
+    });
+
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const selectedError = Object.values(errors).find(error => 
+                error.name.toLowerCase() === this.value.toLowerCase()
+            );
+            if (selectedError) {
+                document.getElementById('errorSelect').value = selectedError.id;
+                document.getElementById('errorSelect').dispatchEvent(new Event('change'));
+            }
+        }
+    });
+}
+
 document.getElementById('errorSelect').onchange = function() {
     const id = this.value;
     if (id) {
@@ -98,5 +157,6 @@ document.getElementById('deleteErrorButton').onclick = async () => {
     fetchErrors();
 };
 
-// Initial fetch of errors
+// Initial setup
 fetchErrors();
+setupSearch();
