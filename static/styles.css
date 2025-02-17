@@ -1,5 +1,5 @@
-/* Стили для навигационной панели */
-.navbar {
+body {
+    font-family: Arial, sans-serif;
     padding-top: 20px; /* Отступ сверху, чтобы контент не сливался с навигацией, если она будет */
     background-color: #f8f9fa; /* Светлый фон */
 }
@@ -124,5 +124,54 @@
 
 #adminControls button:hover {
     background-color: #0056b3; /* Темно-синий цвет при наведении */
+}
+
+
+/* Стили для навигационной панели */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #fff !important;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Адаптивные стили */
+@media (max-width: 991.98px) {
+    .navbar-nav {
+        margin-top: 1rem;
+    }
+
+    .nav-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-outline-light {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
 }
 
