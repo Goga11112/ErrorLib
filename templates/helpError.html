@@ -8,7 +8,13 @@
             <div class="mb-3">
                 <label for="searchError" class="form-label"><b>Поиск ошибки:</b></label>
                 <input type="text" class="form-control" id="searchError" placeholder="Введите название ошибки...">
-                <div id="suggestions" class="list-group"></div>
+                <div class="card-body">
+                    <!-- Форма и другие элементы -->
+                    <!-- Блок предложений -->
+                    <div id="suggestions" class="suggestions-list">
+                        <!-- Предложения будут добавляться здесь -->
+                    </div>
+                </div>
             </div>
         </div>
         <div>
@@ -52,10 +58,11 @@
                     <div id="errorImages" class="d-flex flex-wrap gap-2"></div>
                 </div>
                 <h5 class="mb-3"><b>Решение проблемы:</b></h5>
+                <p id="errorSolution"></p>
                 <div class="text-center mb-3">
                     <div id="errorImagesRes" class="d-flex flex-wrap gap-2"></div>
                 </div>
-                <p id="errorSolution"></p>
+                
             </div>
         </div>
     </div>
