@@ -3,6 +3,13 @@ body {
     background-color: #f8f9fa; /* Светлый фон */
 }
 /* Existing styles */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Стили для изображений ошибок */
 
 .suggestion-item {
     padding: 8px 12px;
@@ -44,11 +51,13 @@ body {
     color: #0056b3; /* Цвет заголовка */
 }
 .error-image {
-    max-width: 100%;
+    max-width: 300%; /* Увеличиваем максимальную ширину */
+    width: 100%;
     height: auto;
-    margin-top: 15px;
-    border-radius: .25rem;
-    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
+    margin: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Стили для элементов управления администратором */

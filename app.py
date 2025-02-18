@@ -5,9 +5,8 @@ from db import db
 from controllers.error_controller import create_error, update_error, delete_error, get_error, get_errors
 from controllers.auth_controller import register, login, check_auth
 from controllers.user_controller import create_user
-import os
 from dotenv import load_dotenv
-
+import os
 # Загружаем переменные окружения из .env файла
 load_dotenv()
 

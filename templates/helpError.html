@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="container">
+    
     <!-- Остальная часть страницы -->
     <div class="row mb-3">
         <div class="col-md-6">
@@ -24,7 +25,8 @@
             </select>
         </div>
     </div>
-
+    <!-- Сообщение об ошибке -->
+    <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
     <!-- CRUD для ошибок (виден только авторизованным пользователям) -->
     <div id="adminControls" style="display: none;">
         <h3>Создать новую ошибку</h3>
@@ -62,7 +64,6 @@
                 <div class="text-center mb-3">
                     <div id="errorImagesRes" class="d-flex flex-wrap gap-2"></div>
                 </div>
-                
             </div>
         </div>
     </div>

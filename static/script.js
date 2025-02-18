@@ -1,7 +1,9 @@
+const API_BASE_URL = 'http://localhost:8080';
+
 document.getElementById('createErrorForm').onsubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const response = await fetch('http://127.0.0.1:5000/api/errors', {
+    const response = await fetch(`${API_BASE_URL}/api/errors`, {
         method: 'POST',
         body: formData
     });
@@ -30,7 +32,7 @@ function clearForm() {
 }
 
 async function fetchErrors() {
-    const response = await fetch('http://127.0.0.1:5000/api/errors');
+    const response = await fetch(`${API_BASE_URL}/api/errors`);
     const errors = await response.json();
     const errorSelect = document.getElementById('errorSelect');
     errorSelect.innerHTML = '<option value="">--Выберите ошибку--</option>';
@@ -53,7 +55,7 @@ function createImageElement(imageUrl, index, type) {
     img.src = '/uploads/' + imageUrl;
     img.alt = type === 'error' ? 'Изображение ошибки' : 'Изображение решения';
     img.className = 'error-image img-thumbnail';
-    img.style.maxWidth = '200px';
+    img.style.maxWidth = '200%';
 
     const caption = document.createElement('div');
     caption.className = 'text-center mt-2';
@@ -69,7 +71,7 @@ function setupSearch() {
     const suggestions = document.getElementById('suggestions');
     let errors = {};
 
-    fetch('http://127.0.0.1:5000/api/errors')
+    fetch(`${API_BASE_URL}/api/errors`)
         .then(response => response.json())
         .then(data => {
             errors = data.reduce((acc, error) => {
@@ -125,7 +127,7 @@ function setupSearch() {
 document.getElementById('errorSelect').onchange = function() {
     const id = this.value;
     if (id) {
-        fetch(`http://127.0.0.1:5000/api/errors/${id}`)
+        fetch(`${API_BASE_URL}/api/errors/${id}`)
             .then(response => response.json())
             .then(data => {
                 document.querySelector('input[name="errorId"]').value = id;
@@ -159,7 +161,7 @@ document.getElementById('errorSelect').onchange = function() {
 document.getElementById('updateErrorForm').onsubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const response = await fetch(`http://127.0.0.1:5000/api/errors/${formData.get('errorId')}`, {
+    const response = await fetch(`${API_BASE_URL}/api/errors/${formData.get('errorId')}`, {
         method: 'PUT',
         body: formData
     });
@@ -174,7 +176,7 @@ document.getElementById('updateErrorForm').onsubmit = async (e) => {
 
 document.getElementById('deleteErrorButton').onclick = async () => {
     const errorId = document.querySelector('input[name="errorId"]').value;
-    await fetch(`http://127.0.0.1:5000/api/errors/${errorId}`, {
+    await fetch(`${API_BASE_URL}/api/errors/${errorId}`, {
         method: 'DELETE'
     });
     fetchErrors();
