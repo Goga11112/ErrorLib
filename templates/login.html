@@ -1,14 +1,25 @@
-<div>
-    <form id="loginForm">
-        <div class="form-group">
-            <label for="loginUsername">Имя пользователя:</label>
-            <input type="text" class="form-control" id="loginUsername" required>
+<div class="login-container">
+    <div class="login-row">
+        <div class="login-col">
+            <div class="login-card">
+                <div class="login-card-header">
+                    <h4 class="login-title">Авторизация</h4>
+                </div>
+                <div class="login-card-body">
+                    <form id="loginForm">
+                        <div class="login-form-group">
+                            <label for="loginUsername" class="login-label">Имя пользователя:</label>
+                            <input type="text" class="form-control" id="loginUsername" required>
+                        </div>
+                        <div class="login-form-group">
+                            <label for="loginPassword" class="login-label">Пароль:</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="login-btn">Войти</button>
+                    </form>
+                    <div id="loginMessage" class="login-message"></div>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="loginPassword">Пароль:</label>
-            <input type="password" class="form-control" id="loginPassword" required>
-        </div>
-        <button type="submit" class="btn btn-success">Войти</button>
-    </form>
-    <div id="loginMessage" class="mt-3"></div>
+    </div>
 </div>

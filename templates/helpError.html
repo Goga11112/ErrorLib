@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{% block navbar %}
-{{ super() }}
-{% endblock %}
-
 {% block content %}
 <div class="container">
     <!-- Остальная часть страницы -->
@@ -37,29 +33,31 @@
         <h3>Обновить существующую ошибку</h3>
         <form id="updateErrorForm">
             <input type="hidden" name="errorId" required>
-            <input type="text" name="errorName" placeholder="Название ошибки" required>
-            <input type="file" name="errorImageFiles" accept="image/*" multiple alt="Формат img или png" required>
-            <textarea name="errorSolution" placeholder="Решение проблемы" required></textarea>
-            <input type="file" name="solutionImageFiles" accept="image/*" multiple alt="Формат img или png" required>
+            <input type="text" name="errorName" placeholder="Новое название ошибки" required>
+            <textarea name="errorSolution" placeholder="Новое решение проблемы" required></textarea>
             <button type="submit">Обновить ошибку</button>
         </form>
 
         <button id="deleteErrorButton">Удалить ошибку</button>
     </div>
 
-    <div id="errorInfo" class="p-4">
-        <h3>Информация об ошибке</h3>
-        <p>Выберите ошибку из списка или найдите через поиск, чтобы увидеть подробную информацию.</p>
-        <hr class="mb-4">
-        <h5 class="mb-3"><b>Ошибка:</b> <span id="errorName"></span></h5>
-        <div class="text-center mb-3">
-            <div id="errorImages" class="d-flex flex-wrap gap-2"></div>
+    <!-- Выпадающее меню для информации об ошибке -->
+    <div id="errorInfo" class="mt-3" style="display: none;">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Информация об ошибке</h5>
+                <hr class="mb-4">
+                <h5 class="mb-3"><b>Ошибка:</b> <span id="errorName"></span></h5>
+                <div class="text-center mb-3">
+                    <div id="errorImages" class="d-flex flex-wrap gap-2"></div>
+                </div>
+                <h5 class="mb-3"><b>Решение проблемы:</b></h5>
+                <div class="text-center mb-3">
+                    <div id="errorImagesRes" class="d-flex flex-wrap gap-2"></div>
+                </div>
+                <p id="errorSolution"></p>
+            </div>
         </div>
-        <h5 class="mb-3"><b>Решение проблемы:</b></h5>
-        <div class="text-center mb-3">
-            <div id="errorImagesRes" class="d-flex flex-wrap gap-2"></div>
-        </div>
-        <p id="errorSolution"></p>
     </div>
 </div>
 {% endblock %}
@@ -84,5 +82,21 @@
 
     // Проверяем авторизацию при загрузке страницы
     window.onload = checkAuth;
+
+    // Обработка выбора ошибки
+    document.getElementById('errorSelect').addEventListener('change', function() {
+        const errorId = this.value;
+        if (errorId) {
+            fetch(`/api/errors/${errorId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('errorName').textContent = data.name;
+                    document.getElementById('errorSolution').textContent = data.solution;
+                    document.getElementById('errorInfo').style.display = 'block';
+                });
+        } else {
+            document.getElementById('errorInfo').style.display = 'none';
+        }
+    });
 </script>
 {% endblock %}
