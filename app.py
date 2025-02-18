@@ -6,11 +6,15 @@ from controllers.error_controller import create_error, update_error, delete_erro
 from controllers.auth_controller import register, login, check_auth
 from controllers.user_controller import create_user
 import os
+from dotenv import load_dotenv
+
+# Загружаем переменные окружения из .env файла
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://Goga:191202@localhost/db_errors'
-app.config['UPLOAD_FOLDER'] = os.path.abspath('uploads')
-app.config['SECRET_KEY'] = 'your-secret-key-here'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
+app.config['UPLOAD_FOLDER'] = os.path.abspath(os.getenv('UPLOAD_FOLDER'))
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 CORS(app)
 db.init_app(app)
 migrate = Migrate(app, db)
