@@ -1,51 +1,101 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
-    <h1>Справка по использованию сайта</h1>
-    <div class="card mb-4">
-        <div class="card-body">
-            <h2 class="card-title">1. Авторизация</h2>
-            <p class="card-text">
-                Для доступа к функционалу сайта необходимо авторизоваться. Нажмите кнопку "Войти" в правом верхнем углу и введите свои учетные данные.
-            </p>
+<div class="container" data-user-is-admin="{{ current_user.is_admin|lower }}">
+
+    <h2>Справка</h2>
+    
+    {% if current_user.is_admin %}
+    <div class="mb-3">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTopicModal">
+            Добавить тему
+        </button>
+    </div>
+    {% endif %}
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Тема ошибки</th>
+                <th>ФИО ответственного</th>
+                <th>Номер телефона</th>
+                {% if current_user.is_admin %}
+                <th>Действия</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody id="topicsTable">
+            <!-- Данные будут загружены через JavaScript -->
+        </tbody>
+    </table>
+
+    <!-- Модальное окно для добавления темы -->
+    <div class="modal fade" id="addTopicModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить тему</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTopicForm">
+                        <div class="mb-3">
+                            <label class="form-label">Тема ошибки</label>
+                            <input type="text" class="form-control" name="topic" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ФИО ответственного</label>
+                            <input type="text" class="form-control" name="responsible" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Номер телефона</label>
+                            <input type="tel" class="form-control" name="phone" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="submit" form="addTopicForm" class="btn btn-primary">Сохранить</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <h2 class="card-title">2. Поиск ошибок</h2>
-            <p class="card-text">
-                Используйте поле поиска на главной странице, чтобы найти информацию об ошибке. Введите название ошибки, и система предложит подходящие варианты.
-            </p>
-        </div>
-    </div>
-
-    <div class="card mb-4">
-        <div class="card-body">
-            <h2 class="card-title">3. Добавление ошибок</h2>
-            <p class="card-text">
-                После авторизации вы сможете добавлять новые ошибки. Для этого используйте форму "Создать новую ошибку" на главной странице.
-            </p>
-        </div>
-    </div>
-
-    <div class="card mb-4">
-        <div class="card-body">
-            <h2 class="card-title">4. Регистрация нового пользователя</h2>
-            <p class="card-text">
-                Если у вас нет учетной записи, нажмите кнопку "Регистрация" после авторизации, чтобы создать новый аккаунт.
-            </p>
-        </div>
-    </div>
-
-    <div class="card mb-4">
-        <div class="card-body">
-            <h2 class="card-title">5. Управление ошибками</h2>
-            <p class="card-text">
-                Авторизованные пользователи могут редактировать и удалять существующие ошибки. Используйте соответствующие формы на главной странице.
-            </p>
+    <!-- Модальное окно для редактирования темы -->
+    <div class="modal fade" id="editTopicModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редактировать тему</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editTopicForm">
+                        <input type="hidden" name="id" id="editTopicId">
+                        <div class="mb-3">
+                            <label class="form-label">Тема ошибки</label>
+                            <input type="text" class="form-control" name="topic" id="editTopic" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ФИО ответственного</label>
+                            <input type="text" class="form-control" name="responsible" id="editResponsible" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Номер телефона</label>
+                            <input type="tel" class="form-control" name="phone" id="editPhone" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="submit" form="editTopicForm" class="btn btn-primary">Сохранить изменения</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='help.js') }}"></script>
 {% endblock %}

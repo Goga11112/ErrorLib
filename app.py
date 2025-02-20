@@ -13,6 +13,14 @@ from controllers.error_controller import (
     get_errors
 )
 from controllers.auth_controller import register, login, check_auth, view_logs
+from controllers.error_topic_controller import (
+    create_error_topic,
+    get_error_topics,
+    get_error_topic,
+    update_error_topic,
+    delete_error_topic
+)
+
 from controllers.user_controller import create_user
 from dotenv import load_dotenv
 import os
@@ -63,6 +71,14 @@ app.route('/api/register', methods=['POST'])(register)
 app.route('/api/login', methods=['POST'])(login)
 app.route('/api/check-auth', methods=['GET'])(check_auth)
 app.route('/api/users', methods=['POST'])(create_user)
+
+# Error topics routes
+app.route('/api/error-topics', methods=['POST'])(create_error_topic)
+app.route('/api/error-topics', methods=['GET'])(get_error_topics)
+app.route('/api/error-topics/<int:error_topic_id>', methods=['GET'])(get_error_topic)
+app.route('/api/error-topics/<int:error_topic_id>', methods=['PUT'])(update_error_topic)
+app.route('/api/error-topics/<int:error_topic_id>', methods=['DELETE'])(delete_error_topic)
+
 
 # Маршруты для страниц
 @app.route('/')

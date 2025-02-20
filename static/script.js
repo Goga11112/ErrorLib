@@ -182,6 +182,13 @@ document.getElementById('deleteErrorButton').onclick = async () => {
     fetchErrors();
 };
 
+    // Инициализация всех модальных окон
+    document.addEventListener('DOMContentLoaded', function() {
+        var modals = [].slice.call(document.querySelectorAll('.modal'));
+        modals.forEach(function(modal) {
+            new bootstrap.Modal(modal);
+        });
+    });
 // Initial setup
 fetchErrors();
 setupSearch();
