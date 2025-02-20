@@ -1,7 +1,7 @@
 from flask import request, jsonify, current_app
-from models.error import Error
-from models.error_image import ErrorImage
-from db import db
+from database.models.error import Error
+from database.models.error_image import ErrorImage
+from database.db import db
 from utils.file_utils import get_unique_filename
 from utils.error_utils import check_error_name_exists
 import os

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory, render_template, abort, redirect, url_for
 from flask_cors import CORS
 from flask_migrate import Migrate
-from db import db
+from database.db import db
 from controllers.error_controller import create_error, update_error, delete_error, get_error, get_errors
 from controllers.auth_controller import register, login, check_auth
 from controllers.user_controller import create_user
