@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'http://localhost:5000';
 
 document.getElementById('createErrorForm').onsubmit = async (e) => {
     e.preventDefault();

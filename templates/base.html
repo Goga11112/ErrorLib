@@ -29,18 +29,23 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/help">Справка</a>
                     </li>
+                    <li id="userNavItem" class="nav-item auth-only" style="display: none;">
+                        <span class="nav-link">{{ current_user.realname }}</span>
+                    </li>
+
+                    <li id="registerNavItem" class="nav-item auth-only" style="display: none;">
+                        <a class="nav-link" href="/register">Регистрация</a>
+                    </li>
+                    <li class="nav-item auth-only" style="display: none;">
+                        <a class="nav-link" href="/logs">Логирование</a>
+                    </li>
+
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <button class="btn btn-outline-light me-2" type="button" data-bs-toggle="collapse" data-bs-target="#authCollapse" aria-expanded="false" aria-controls="authCollapse">
                             Войти
                         </button>
-                    </li>
-                    <li id="userNavItem" class="nav-item" style="display: none;">
-                        <span class="nav-link">Пользователь</span>
-                    </li>
-                    <li id="registerNavItem" class="nav-item" style="display: none;">
-                        <a class="nav-link" href="/register">Регистрация</a>
                     </li>
                 </ul>
             </div>

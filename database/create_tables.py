@@ -12,6 +12,9 @@ def create_tables():
         if not admin_user:
             admin_user = User(username='admin')
             admin_user.set_password('admin')
+            admin_user.realname='Егор'
+            admin_user.is_admin=True
+            
             db.session.add(admin_user)
             db.session.commit()
             print("Пользователь admin создан")

@@ -1,25 +1,40 @@
-<div class="login-container">
-    <div class="login-row">
-        <div class="login-col">
-            <div class="login-card">
-                <div class="login-card-header">
-                    <h4 class="login-title">Авторизация</h4>
-                </div>
-                <div class="login-card-body">
-                    <form id="loginForm">
-                        <div class="login-form-group">
-                            <label for="loginUsername" class="login-label">Имя пользователя:</label>
-                            <input type="text" class="form-control" id="loginUsername" required>
-                        </div>
-                        <div class="login-form-group">
-                            <label for="loginPassword" class="login-label">Пароль:</label>
-                            <input type="password" class="form-control" id="loginPassword" required>
-                        </div>
-                        <button type="submit" class="login-btn">Войти</button>
-                    </form>
-                    <div id="loginMessage" class="login-message"></div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-row">
+            <div class="login-col">
+                <div class="login-card">
+                    <div class="login-card-header">
+                        <h4 class="login-title">Авторизация</h4>
+                    </div>
+                    <div class="login-card-body">
+                        <form id="loginForm">
+                            <input type="hidden" name="next" value="{{ next_url }}">
+                            <!-- Debug: next_url = {{ next_url }} -->
+                            <div class="login-form-group">
+
+
+                                <label for="loginUsername" class="login-label">Имя пользователя:</label>
+                                <input type="text" class="form-control" id="loginUsername" required>
+                            </div>
+                            <div class="login-form-group">
+                                <label for="loginPassword" class="login-label">Пароль:</label>
+                                <input type="password" class="form-control" id="loginPassword" required>
+                            </div>
+                            <button type="submit" class="login-btn">Войти</button>
+                        </form>
+                        <div id="loginMessage" class="login-message"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</body>
+</html>

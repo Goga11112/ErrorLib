@@ -5,14 +5,27 @@
     <h2>Регистрация</h2>
     <form id="registerForm">
         <div class="form-group">
-            <label for="username">Имя пользователя:</label>
+            <label for="username">Почта:</label>
             <input type="text" class="form-control" id="username" required>
         </div>
         <div class="form-group">
             <label for="password">Пароль:</label>
             <input type="password" class="form-control" id="password" required>
         </div>
+        <div class="form-group">
+            <label for="realUsername">Имя пользователя:</label>
+            <input type="text" class="form-control" id="realUsername" required>
+        </div>
+        <div class="form-group">
+            <label for="is_admin">Администратор:</label>
+            <select class="form-control" id="is_admin" required>
+                <option value="false">Нет</option>
+                <option value="true">Да</option>
+            </select>
+        </div>
+
         <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+
     </form>
     <div id="registerMessage" class="mt-3"></div>
 </div>

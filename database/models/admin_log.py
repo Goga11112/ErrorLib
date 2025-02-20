@@ -6,8 +6,10 @@ class AdminLog(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    error_id = db.Column(db.Integer, db.ForeignKey('error.id'), nullable=False)
-    action_type = db.Column(db.String(10), nullable=False)  # create/update/delete
+    error_id = db.Column(db.Integer, db.ForeignKey('error.id'), nullable=True)
+
+    action_type = db.Column(db.String(50), nullable=False)  # create/update/delete
+
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     details = db.Column(db.JSON, nullable=True)
 
@@ -18,14 +20,16 @@ class AdminLog(db.Model):
         return f'<AdminLog {self.id} {self.action_type} {self.timestamp}>'
 
     @staticmethod
-    def log_action(user_id, error_id, action_type, details=None):
+    def log_action(user_id, action_type, error_id=None, details=None):
         """Create a new admin log entry"""
         log = AdminLog(
             user_id=user_id,
-            error_id=error_id,
             action_type=action_type,
+            error_id=error_id,
             details=details
         )
+
+
         db.session.add(log)
         db.session.commit()
         return log
