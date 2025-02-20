@@ -1,4 +1,4 @@
-from models.error import Error
+from database.models.error import Error
 
 def check_error_name_exists(name, exclude_id=None):
     query = Error.query.filter(Error.name == name)

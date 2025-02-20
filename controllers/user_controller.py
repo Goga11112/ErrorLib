@@ -1,6 +1,9 @@
 from flask import request, jsonify
+from flask_login import current_user
 from database.models.user import User
 from database.db import db
+from services.admin_log_service import AdminLogService
+
 
 def create_user():
     data = request.get_json()
@@ -14,5 +17,12 @@ def create_user():
     user.set_password(data['password'])
     db.session.add(user)
     db.session.commit()
+    
+    AdminLogService.log_action(
+        current_user.id,
+        user.id,
+        'create',
+        {'username': user.username, 'is_admin': user.is_admin}
+    )
 
     return jsonify({'message': 'User created successfully'}), 201

@@ -1,5 +1,8 @@
 from flask import request, jsonify, current_app
+from flask_login import current_user
 from database.models.error import Error
+from services.admin_log_service import AdminLogService
+
 from database.models.error_image import ErrorImage
 from database.db import db
 from utils.file_utils import get_unique_filename
@@ -39,7 +42,14 @@ def create_error():
 
         db.session.add(new_error)
         db.session.commit()
+        AdminLogService.log_action(
+            current_user.id,
+            new_error.id,
+            'create',
+            {'name': new_error.name}
+        )
         return jsonify({'message': 'Error created successfully'}), 201
+
     except IntegrityError:
         db.session.rollback()
         return jsonify({'message': 'Ошибка с таким названием уже существует'}), 400
@@ -79,7 +89,14 @@ def update_error(error_id):
                     db.session.add(error_image)
 
         db.session.commit()
+        AdminLogService.log_action(
+            current_user.id,
+            error.id,
+            'update',
+            {'name': error.name}
+        )
         return jsonify({'message': 'Error updated successfully'})
+
     except IntegrityError:
         db.session.rollback()
         return jsonify({'message': 'Ошибка с таким названием уже существует'}), 400
@@ -92,7 +109,14 @@ def delete_error(error_id):
 
     db.session.delete(error)    
     db.session.commit()
+    AdminLogService.log_action(
+        current_user.id,
+        error.id,
+        'delete',
+        {'name': error.name}
+    )
     return jsonify({'message': 'Error deleted successfully'})
+
 
 def get_error(error_id):
     error = Error.query.get_or_404(error_id)

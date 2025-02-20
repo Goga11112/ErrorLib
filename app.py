@@ -1,12 +1,19 @@
-from flask import Flask, request, jsonify, send_from_directory, render_template, abort, redirect, url_for
+from flask import Flask, abort, render_template, send_from_directory
 from flask_cors import CORS
 from flask_migrate import Migrate
 from database.db import db
-from controllers.error_controller import create_error, update_error, delete_error, get_error, get_errors
+from controllers.error_controller import (
+    create_error, 
+    update_error, 
+    delete_error, 
+    get_error, 
+    get_errors
+)
 from controllers.auth_controller import register, login, check_auth
 from controllers.user_controller import create_user
 from dotenv import load_dotenv
 import os
+
 # Загружаем переменные окружения из .env файла
 load_dotenv()
 
@@ -48,7 +55,6 @@ def login_page():
 @app.route('/users')
 def users_page():
     return render_template('users.html')
-
 
 @app.route('/help')
 def help_page():
