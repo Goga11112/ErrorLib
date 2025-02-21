@@ -3,6 +3,7 @@ from flask import Flask, abort, render_template, request, send_from_directory
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_wtf import CSRFProtect
 
 from database.db import db
 from controllers.error_controller import (
@@ -21,7 +22,11 @@ from controllers.error_topic_controller import (
     delete_error_topic
 )
 
-from controllers.user_controller import create_user
+from controllers.user_controller import (
+    create_user,
+    delete_user,
+    get_users
+)
 from dotenv import load_dotenv
 import os
 
@@ -29,6 +34,9 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your-secret-key-here'  # Replace with a real secret key
+csrf = CSRFProtect(app)
+
 
 # Настройки сессий
 app.config.update(
@@ -71,6 +79,9 @@ app.route('/api/register', methods=['POST'])(register)
 app.route('/api/login', methods=['POST'])(login)
 app.route('/api/check-auth', methods=['GET'])(check_auth)
 app.route('/api/users', methods=['POST'])(create_user)
+app.route('/api/users/<int:user_id>', methods=['DELETE'])(delete_user)
+app.route('/api/users', methods=['GET'])(get_users)
+
 
 # Error topics routes
 app.route('/api/error-topics', methods=['POST'])(create_error_topic)
@@ -94,11 +105,6 @@ def login_page():
     next_url = request.args.get('next', '/')
     return render_template('login.html', next_url=next_url)
 
-
-@app.route('/users')
-def users_page():
-    return render_template('users.html')
-
 @app.route('/help')
 def help_page():
     return render_template('help.html')
@@ -106,6 +112,12 @@ def help_page():
 @app.route('/logs')
 def logs_page():
     return view_logs()
+
+@app.route('/users')
+def users_page():
+    return render_template('users.html')
+
+
 
 @login_manager.user_loader
 def load_user(user_id):
