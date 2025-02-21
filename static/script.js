@@ -189,6 +189,52 @@ document.getElementById('deleteErrorButton').onclick = async () => {
             new bootstrap.Modal(modal);
         });
     });
+// Menu toggle functionality
+document.getElementById('actionsBtn').addEventListener('click', () => {
+    document.getElementById('actionsSection').style.display = 'block';
+    document.getElementById('usersSection').style.display = 'none';
+});
+
+document.getElementById('usersBtn').addEventListener('click', () => {
+    document.getElementById('actionsSection').style.display = 'none';
+    document.getElementById('usersSection').style.display = 'block';
+    fetchUsers();
+});
+
+async function fetchUsers() {
+    const response = await fetch(`${API_BASE_URL}/api/users`);
+    const users = await response.json();
+    const usersList = document.getElementById('usersList');
+    usersList.innerHTML = '';
+
+    if (users && Array.isArray(users)) {
+        users.forEach(user => {
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-item';
+            userDiv.innerHTML = `
+                <span>${user.username} (${user.is_admin ? 'Админ' : 'Пользователь'})</span>
+                ${!user.is_admin ? `<button onclick="deleteUser(${user.id})">Удалить</button>` : ''}
+            `;
+            usersList.appendChild(userDiv);
+        });
+    }
+}
+
+async function deleteUser(userId) {
+    if (confirm('Вы уверены, что хотите удалить этого пользователя?')) {
+        const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            fetchUsers();
+        } else {
+            const errorData = await response.json();
+            showErrorMessage(errorData.message);
+        }
+    }
+}
+
 // Initial setup
 fetchErrors();
 setupSearch();

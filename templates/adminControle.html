@@ -1,5 +1,8 @@
 {% block content %}
-    <h3>Создать новую ошибку</h3>
+   
+    <div id="actionsSection">
+        <h3>Создать новую ошибку</h3>
+
     <form id="createErrorForm" enctype="multipart/form-data">
         <input type="text" name="errorName" placeholder="Название ошибки" required>
         <input type="file" name="errorImageFiles" accept="image/*" multiple alt="Формат img или png" required>
@@ -17,4 +20,10 @@
     </form>
 
     <button id="deleteErrorButton">Удалить ошибку</button>
+    </div>
+    
+    <div id="usersSection" style="display: none;">
+        <h3>Управление пользователями</h3>
+        <div id="usersList"></div>
+    </div>
 {% endblock %}
