@@ -20,8 +20,11 @@ def create_error():
     
     for files in [error_files, solution_files]:
         for image_file in files:
-            if not (image_file.filename.endswith('.png') or image_file.filename.endswith('.jpg') or image_file.filename.endswith('.jpeg')):
-                return jsonify({'message': 'Недопустимый формат файла. Допустимы только .png и .jpg'}), 400
+            if not (image_file.filename.endswith('.png') or 
+                   image_file.filename.endswith('.jpg') or 
+                   image_file.filename.endswith('.jpeg') or
+                   image_file.filename.endswith('.gif')):
+                return jsonify({'message': 'Недопустимый формат файла. Допустимы только .png, .jpg и .gif'}), 400
     
     try:
         new_error = Error(name=data['errorName'], solution=data['errorSolution'])

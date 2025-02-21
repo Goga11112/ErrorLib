@@ -32,9 +32,11 @@
         <h3>Создать новую ошибку</h3>
         <form id="createErrorForm" enctype="multipart/form-data">
             <input type="text" name="errorName" placeholder="Название ошибки" required>
-            <input type="file" name="errorImageFiles" accept="image/*" multiple alt="Формат img или png" required>
+            <input type="file" name="errorImageFiles" accept="image/*" multiple alt="Формат img, png или gif" required>
+
             <textarea name="errorSolution" placeholder="Решение проблемы" required></textarea>
-            <input type="file" name="solutionImageFiles" accept="image/*" multiple alt="Формат img или png" required>
+            <input type="file" name="solutionImageFiles" accept="image/*" multiple alt="Формат img, png или gif" required>
+
             <button type="submit">Создать ошибку</button>
         </form>
 
